@@ -1,0 +1,17 @@
+{
+  "name": "overwatch.discord",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Stefan Rimaila <stefan@rimaila.fi>",
+  "license": "MIT",
+  "dependencies": {
+    "karet.util": "^0.13.0",
+    "kefir": "^3.7.2",
+    "partial.lenses": "^11.9.0",
+    "ramda": "^0.24.1",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1"
+  }
+}
