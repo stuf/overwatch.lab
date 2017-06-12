@@ -4,14 +4,33 @@
   "main": "index.js",
   "author": "Stefan Rimaila <stefan@rimaila.fi>",
   "license": "MIT",
+  "scripts": {
+    "dev": "rimraf build/ && babel src -d build --watch",
+    "dev:app": "nodemon build/index.js -w build/ -- -r source-map-support/register",
+    "start": "",
+    "lint": "eslint src/"
+  },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.1",
+    "express": "^4.15.3",
     "karet.util": "^0.13.0",
     "kefir": "^3.7.2",
     "partial.lenses": "^11.9.0",
     "ramda": "^0.24.1",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "rethinkdb": "^2.3.3"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1"
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.5.2",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.3.0",
+    "logdown": "^2.2.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
+    "rimraf": "^2.6.1",
+    "source-map-support": "^0.4.15"
   }
 }
