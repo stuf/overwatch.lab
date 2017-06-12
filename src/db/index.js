@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle, no-confusing-arrow */
-import Kefir, { fromNodeCallback as intoK, fromPromise as fromP } from 'kefir';
+import Kefir, { fromPromise as fromP } from 'kefir';
 import K, * as U from 'karet.util';
+import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import r from 'rethinkdb';
 
@@ -18,14 +19,6 @@ const highlights = db.table(Table.AVERAGE);
 
 //
 
-const withProfile = o =>
-  R.merge(o, { profile: _id });
-
-const withMeta = o =>
-  R.merge(o, { createdAt: new Date() });
-
-//
-
 const emitConnection = R.curry((options, emitter) =>
   r.connect(
     options,
@@ -39,15 +32,13 @@ const emitConnection = R.curry((options, emitter) =>
       emitter.end();
     }));
 
-const connection$ = Kefir.stream(emitConnection(connectionOptions));
-const connection = K(connection$, R.identity);
+const connection = K(Kefir.stream(emitConnection(connectionOptions)), R.identity);
 
 //
 
 export const run = query =>
   U.seq(connection,
-        U.flatMapLatest(conn =>
-          Kefir.fromPromise(query.run(conn))));
+        U.flatMapLatest(conn => fromP(query.run(conn))));
 
 //
 
@@ -55,17 +46,12 @@ export const table = name => db.table(name);
 
 //
 
-export const changesFrom = query => intoK(run(query.changes()));
-
-// curried point-free:
-//   averagesDb = run ∘ mergeWithMeta ∘ insert
-
-const withExtra = R.compose(withProfile, withMeta);
+export const changesFrom = query => run(query.changes());
 
 //
 
-export const getProfile = name =>
-  U.seq(run(profiles.filter({ name })
+export const getProfile = (name, tag) =>
+  U.seq(run(profiles.filter({ name, tag })
                     .distinct()),
         U.flatMapLatest(c => fromP(c.toArray())),
         U.lift(arr => arr && arr.length > 0 ? arr[0]
@@ -73,17 +59,22 @@ export const getProfile = name =>
 
 //
 
-export const pushHighlightStats = avgs =>
-  U.seq(connection,
-        U.flatMapLatest(conn =>
-          intoK(cb => highlights.insert(withExtra(avgs))
-                                .run(conn, cb))));
+export const insertStats = (profileId, stats) =>
+  run(highlights.insert(r.expr(stats)
+                         .merge({ createdAt: r.now() })));
+
+// export const pushHighlightStats = avgs =>
+//   run(highlights.insert(withExtra(avgs)));
+
+//
 
 export const insertProfile = profile =>
-  U.seq(connection,
-        U.flatMapLatest(conn =>
-          intoK(cb => profiles.insert(withExtra(profile))
-                              .run(conn, cb))));
+  run(profiles.insert(r.expr(profile)
+                       .merge({ createdAt: r.now() })));
+
+export const updateProfile = profileId =>
+  run(profiles.get(profileId)
+              .merge({ modifiedAt: r.now() }));
 
 //
 

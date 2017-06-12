@@ -15,3 +15,8 @@ highlights <value> { avgElims: '11.08',
   avgSoloKills: '1.67' }
 player <value> { name: 'piparkaq', level: 63 }
 ```
+
+## Requirements
+
+ * Node.js v7+
+ * RethinkDB
