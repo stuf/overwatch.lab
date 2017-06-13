@@ -5,6 +5,8 @@
 import * as L from 'partial.lenses';
 import * as R from 'ramda';
 
+import { getKeyByValue } from '../common/util';
+
 //
 
 export const SELECTOR = '.highlights-section';
@@ -36,13 +38,6 @@ const HighlightStat = {
   empty: R.always({}),
   concat: (x, y) => R.merge(pairToObj(x), y),
 };
-
-//
-
-const getKeyByValue = R.curry((val, obj) =>
-  R.compose(R.head,
-            R.find(([, v]) => R.equals(val, v)),
-            R.toPairs)(obj));
 
 //
 

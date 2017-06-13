@@ -5,8 +5,8 @@
   "author": "Stefan Rimaila <stefan@rimaila.fi>",
   "license": "MIT",
   "scripts": {
-    "dev": "rimraf build/ && babel src -d build --watch",
-    "dev:app": "nodemon build/index.js -w build/ -- -r source-map-support/register",
+    "dev": "NODE_ENV=development rimraf build/ && babel src -d build --watch",
+    "dev:app": "NODE_ENV=development nodemon build/index.js -w build/ -- -r source-map-support/register",
     "start": "",
     "lint": "eslint src/"
   },
@@ -15,6 +15,7 @@
     "express": "^4.15.3",
     "karet.util": "^0.13.0",
     "kefir": "^3.7.2",
+    "logdown": "^2.2.0",
     "partial.lenses": "^11.9.0",
     "ramda": "^0.24.1",
     "request": "^2.81.0",
@@ -27,7 +28,6 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.3.0",
-    "logdown": "^2.2.0",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "rimraf": "^2.6.1",
