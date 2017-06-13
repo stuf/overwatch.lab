@@ -1,6 +1,7 @@
 import * as U from 'karet.util';
 
 import { fetchProfile } from './client';
+import { fetchMockProfile } from './mock';
 
 //
 
@@ -10,6 +11,8 @@ import { fetchProfile } from './client';
  * @param {string} tag
  */
 export const getProfileFor = (name, tag) => fetchProfile(name, tag);
+
+export const getMockProfile = () => fetchMockProfile();
 
 /**
  * Fetches and parses a list of profiles

@@ -5,6 +5,7 @@ export const Table = {
   PROFILE_META: 'profilemeta',
   HIGHLIGHT: 'highlight',
   AVERAGE: 'average',
+  PLAYER: 'player',
 };
 
 export const PROFILE_TABLE = 'profile';

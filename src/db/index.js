@@ -25,7 +25,7 @@ const db = r.db(dbName);
 const profiles = db.table(Table.PROFILE);
 const highlights = db.table(Table.AVERAGE);
 
-// //
+//
 
 const withProfile = o =>
   R.merge(o, { profile: _id });
@@ -33,49 +33,61 @@ const withProfile = o =>
 const withMeta = o =>
   R.merge(o, { createdAt: new Date() });
 
-// //
+//
 
 const connect = r.connect(connectionOptions);
+
 const connection = K(fromP(connect), R.identity);
 
-// //
+//
 
 export const run = query =>
   U.seq(connection,
-        U.flatMapLatest(conn =>
-          Kefir.fromPromise(query.run(conn))));
+        U.flatMapLatest(conn => fromP(query.run(conn))));
 
-// //
+//
 
 // export const table = name => db.table(name);
 
-// //
+//
 
 export const toArray = cursor => fromP(cursor.toArray());
 
-// //
+//
 
 // export const changesFrom = query => intoK(run(query.changes()));
 
-// // curried point-free:
-// //   averagesDb = run ∘ mergeWithMeta ∘ insert
+// curried point-free:
+//   averagesDb = run ∘ mergeWithMeta ∘ insert
 
 const withExtra = R.compose(withProfile, withMeta);
 
-// //
+//
 
 export const getProfile = name =>
   U.seq(run(profiles.filter({ name })),
         U.flatMapLatest(toArray),
         U.lift(R.head));
 
-// //
+//
 
 export const pushHighlightStats = avgs =>
-  U.seq(connection,
-        U.flatMapLatest(conn =>
-          intoK(cb => highlights.insert(withExtra(avgs))
-                                .run(conn, cb))));
+  run(highlights.insert(r.expr(avgs)
+                         .merge({ createdAt: r.now() })));
+
+export const pushAveragesForUser = (profileId, avgs) =>
+  run(highlights.insert(r.expr(avgs)
+                         .merge({
+                           createdAt: r.now(),
+                           profile: profileId,
+                         })));
+
+//
+
+export const putPlayer = (profileId, player) =>
+  run(db.table(Table.PLAYER)
+        .insert(r.expr(player)
+                 .merge({ modifiedAt: r.now() })));
 
 // export const insertProfile = profile =>
 //   U.seq(connection,
