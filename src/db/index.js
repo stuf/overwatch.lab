@@ -10,7 +10,7 @@ import { DB_NAME, Table, connectionOptions } from './config';
 
 //
 
-const logger = new Logdown({ prefix: 'db' });
+const logger = new Logdown({ prefix: 'src/db/index' });
 
 //
 

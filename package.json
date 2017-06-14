@@ -1,6 +1,6 @@
 {
-  "name": "overwatch.discord",
-  "version": "1.0.0",
+  "name": "overwatch.lab",
+  "version": "0.2.0",
   "main": "index.js",
   "author": "Stefan Rimaila <stefan@rimaila.fi>",
   "license": "MIT",
