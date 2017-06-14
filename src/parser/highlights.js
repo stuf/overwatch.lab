@@ -82,8 +82,7 @@ export const parseHighlights = root =>
             R.map(
               R.compose(
                 R.map(R.last),
-                R.toPairs)))),
-        U.lift(U.show));
+                R.toPairs)))));
 
 //
 

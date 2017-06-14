@@ -31,4 +31,4 @@ const careerStats = userCareerProfile.flatMap(parseCareerStats(Heroes.ALL_HEROES
 
 highlights.log('highlights');
 // player.log('player');
-// careerStats.log('careerStats');
+careerStats.log('careerStats');
