@@ -23,6 +23,7 @@ logger.info(`Using \`${dbName}\` as database.`);
 const db = r.db(dbName);
 const profiles = db.table(Table.PROFILE);
 const highlights = db.table(Table.AVERAGE);
+const players = db.table(Table.PLAYER);
 
 const connect = r.connect(connectionOptions);
 const connection = K(fromP(connect), R.identity);
@@ -35,14 +36,37 @@ export const run = query =>
 
 export const toArray = cursor => fromP(cursor.toArray());
 
-//
+// Profile
 
 export const getProfile = name =>
-  U.seq(run(profiles.filter({ name })),
+  U.seq(run(db.table(Table.PROFILE).filter({ name })),
         U.flatMapLatest(toArray),
         U.lift(R.head));
 
-//
+// Player
+
+export const addPlayer = (profileId, player) =>
+  U.seq(K(profileId, player),
+        U.lift(U.show));
+
+export const updatePlayer = (id, player) =>
+  U.seq(run(player.get(id)
+                  .update(r.expr(player)
+                           .merge({ modifiedAt: r.now() }))));
+
+export const putPlayer = (profileId, player) =>
+  run(db.table(Table.PLAYER)
+        .insert(r.expr(player)
+                 .merge({ modifiedAt: r.now() })));
+
+export const playerExists = profileId =>
+  U.seq(profileId,
+        U.flatMapLatest(id =>
+          run(db.table(Table.PLAYER)
+                .filter({ profileId: id }))),
+        U.complement(U.isEmpty));
+
+// Highlight
 
 export const pushHighlightStats = avgs =>
   run(highlights.insert(r.expr(avgs)
@@ -56,10 +80,5 @@ export const pushAveragesForUser = (profileId, avgs) =>
                          })));
 
 //
-
-export const putPlayer = (profileId, player) =>
-  run(db.table(Table.PLAYER)
-        .insert(r.expr(player)
-                 .merge({ modifiedAt: r.now() })));
 
 //
