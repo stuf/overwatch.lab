@@ -1,5 +1,7 @@
 import K, * as U from 'karet.util';
 import * as R from 'ramda';
+import Logdown from 'logdown';
+
 import * as DB from './db';
 import { getProfileFor, getMockProfile } from './scraper';
 
@@ -10,13 +12,23 @@ import { parsePlayer } from './parser/player';
 
 //
 
+const logger = new Logdown({ prefix: 'main' });
+const { NODE_ENV, USE_MOCK } = process.env;
+
+logger.info('NODE\_ENV is', `\`${NODE_ENV}\``);
+logger.info('USE\_MOCK is', `\`${USE_MOCK ? 'on' : 'off'}\``);
+
+//
+
 const _p = ['piparkaq', '2318'];
 
-const userProfile = DB.getProfile(_p[0]); // .log('userProfile');
-const userId = userProfile.map(R.prop('id')); // .log('userId');
+const userProfile = DB.getProfile(_p[0]);
+const userId = userProfile.map(R.prop('id'));
 
-// const userCareerProfile = userProfile.flatMap(({ name, tag }) => getProfileFor(name, tag));
-const userCareerProfile = getMockProfile();
+const userCareerProfile =
+  !(NODE_ENV === 'development' && USE_MOCK == 1)
+    ? userProfile.flatMap(({ name, tag }) => getProfileFor(name, tag))
+    : getMockProfile();
 
 const highlights = userCareerProfile.flatMap(parseHighlights);
 const player = userCareerProfile.flatMap(parsePlayer);

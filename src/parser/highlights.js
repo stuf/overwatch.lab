@@ -29,19 +29,15 @@ const highlightKeys = {
 
 const highlightKeysInv = flipObj(highlightKeys);
 
-// const highlightKeysInv =
-//   R.compose(R.fromPairs,
-//             R.map(R.reverse),
-//             R.toPairs)(highlightKeys);
-
 //
 
 export const parseHighlights = root =>
   U.seq((root),
-        U.flatMapLatest(r => fromCb(xF3(r, '.highlights-section .card-content', [{
-          key: '.card-copy',
-          value: '.card-heading',
-        }]))),
+        U.flatMapLatest(r =>
+          fromCb(xF3(r, '.highlights-section .card-content', [{
+            key: '.card-copy',
+            value: '.card-heading',
+          }]))),
         U.flatMapLatest(
           R.compose(
             R.fromPairs,

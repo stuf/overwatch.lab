@@ -5,8 +5,11 @@
   "author": "Stefan Rimaila <stefan@rimaila.fi>",
   "license": "MIT",
   "scripts": {
+    "start": "",
+    "start:dev": "NODE_ENV=development npm run dev:app",
+    "start:dev:mock": "NODE_ENV=development USE_MOCK=1 npm run dev:app",
     "dev": "NODE_ENV=development rimraf build/ && babel src -d build --watch",
-    "dev:app": "NODE_ENV=development nodemon build/index.js -w build/ -- -r source-map-support/register",
+    "dev:app": "nodemon build/index.js -w build/ -- -r source-map-support/register",
     "start": "",
     "lint": "eslint src/"
   },
