@@ -1,6 +1,4 @@
-import Logdown from 'logdown';
 import pkg from '../package.json';
-
 import { mkLogger } from './common/logger';
 
 const logger = mkLogger('src:index');

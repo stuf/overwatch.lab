@@ -10,11 +10,11 @@
     "start:dev:mock": "NODE_ENV=development USE_MOCK=1 npm run dev:app",
     "dev": "NODE_ENV=development rimraf build/ && babel src -d build --watch",
     "dev:app": "nodemon build/index.js -w build/ -- -r source-map-support/register",
-    "start": "",
     "lint": "eslint src/"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "date-fns": "^1.28.5",
     "express": "^4.15.3",
     "karet.util": "^0.13.0",
     "kefir": "^3.7.2",

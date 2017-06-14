@@ -1,7 +1,11 @@
 /* eslint-disable no-useless-escape */
+import fs from 'fs';
+import path from 'path';
 import K, * as U from 'karet.util';
 import * as R from 'ramda';
+import * as D from 'date-fns';
 
+import * as H from './common/util';
 import { mkLogger } from './common/logger';
 
 import * as DB from './db';
@@ -14,7 +18,10 @@ import { parsePlayer } from './parser/player';
 
 //
 
+const dataTargetDir = path.resolve(__dirname, '..', 'data', 'json');
 const getUserId = U.lift(R.prop('id'));
+
+//
 
 export default () => {
   const logger = mkLogger('src:main');
@@ -22,41 +29,34 @@ export default () => {
 
   logger.info('NODE\_ENV is', `\`${NODE_ENV}\``);
   logger.info('USE\_MOCK is', `\`${USE_MOCK ? 'on' : 'off'}\``);
+  logger.info();
 
   //
 
   const _p = ['piparkaq', '2318']; // mock
 
-  const userProfile = DB.getProfile(_p[0]).log('userProfile');
-  const userId = getUserId(userProfile).log('userId');
+  const userProfile = DB.getProfile(_p[0]);
+  const userId = getUserId(userProfile);
 
   const userCareerProfile =
     !(NODE_ENV === 'development' && USE_MOCK === '1')
       ? userProfile.flatMap(({ name, tag }) => getProfileFor(name, tag))
       : getMockProfile();
 
-  // Averages
-  // const pushAverages = K(userId, highlights).flatMap(R.apply(DB.pushAveragesForUser));
+  const player = userCareerProfile.flatMapLatest(parsePlayer);
+  const highlights = userCareerProfile.flatMapLatest(parseHighlights);
+  const careerStats = userCareerProfile.flatMapLatest(parseCareerStats(Heroes.ALL_HEROES));
 
-  const player = userCareerProfile.flatMap(parsePlayer).log();
+  const now = R.compose(H.dateFormat('YYYY-MM-DDTHHmmss'),
+                        D.startOfSecond,
+                        D.getTime)(new Date());
 
-  // Create player if it doesn't exist
-  const playerExists = DB.playerExists(userId);
-
-  U.seq(playerExists.log('exists'),
-        U.flatMapLatest(DB.addPlayer(userId)));
-
-  // Push data into DB
-  // U.seq(K({ userProfile,
-  //           userId,
-  //           highlights: userCareerProfile.flatMap(parseHighlights),
-  //           player: userCareerProfile.flatMap(parsePlayer),
-  //           careerStats: userCareerProfile.flatMap(parseCareerStats(Heroes.ALL_HEROES)) }, R.identity))
-  //   .log('combined');
-
-  //
-
-  // highlights.log('highlights');
-  // player.log('player');
-  // careerStats.log('careerStats');
+  // Just output them for now
+  U.seq(K({ player, highlights, careerStats }, R.identity),
+    U.flatMapLatest(R.compose(R.toPairs)),
+    U.map(([k, v]) =>
+      fs.writeFileSync(`${dataTargetDir}/${k}_${now}.json`,
+                       JSON.stringify(v, null, 2))))
+    .log('write')
+    .observe(R.identity);
 };

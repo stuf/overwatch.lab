@@ -1,4 +1,4 @@
-/* eslint-disable no-confusing-arrow */
+/* eslint-disable no-confusing-arrow, camelcase */
 import {
   pipe,
   compose,
@@ -6,16 +6,22 @@ import {
   reverse,
   equals,
   curry,
-  curryN,
   replace,
   is,
   toPairs,
   fromPairs,
   head,
   find,
+  flip,
 } from 'ramda';
 import * as U from 'karet.util';
-import { Observable, constant } from 'kefir';
+import {
+  Observable,
+  constant,
+  fromNodeCallback as Kefir_fromNodeCallback,
+  fromPromise as Kefir_fromPromise,
+} from 'kefir';
+import * as Dfns from 'date-fns';
 import Xray from 'x-ray';
 
 // Basic helper functions
@@ -36,6 +42,14 @@ export const xU3 = (a, b, c) => U.lift(xF3)(a, b, c); // lifted version might no
 // Kefir
 
 export const toConstant = a => a instanceof Observable ? a : constant(a);
+export const fromPromise = curry(Kefir_fromPromise);
+export const fromNodeCallback = curry(Kefir_fromNodeCallback);
+
+// date-fns
+
+const Dfns_dateFormat = flip(Dfns.format);
+
+export const dateFormat = curry(Dfns_dateFormat);
 
 //
 

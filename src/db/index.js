@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle, no-confusing-arrow */
 import { fromPromise as fromP } from 'kefir';
 import K, * as U from 'karet.util';
-import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import r from 'rethinkdb';
 
@@ -21,18 +20,14 @@ logger.info(`Using \`${dbName}\` as database.`);
 //
 
 const db = r.db(dbName);
-const profiles = db.table(Table.PROFILE);
 const highlights = db.table(Table.AVERAGE);
-const players = db.table(Table.PLAYER);
 
 const connect = r.connect(connectionOptions);
 const connection = K(fromP(connect), R.identity);
 
 //
 
-export const run = query =>
-  U.seq(connection,
-        U.flatMapLatest(conn => fromP(query.run(conn))));
+export const run = query => connection.flatMapLatest(conn => fromP(query.run(conn)));
 
 export const toArray = cursor => fromP(cursor.toArray());
 
