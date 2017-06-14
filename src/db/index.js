@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle, no-confusing-arrow */
 import { fromPromise as fromP } from 'kefir';
 import K, * as U from 'karet.util';
+import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import r from 'rethinkdb';
 import Logdown from 'logdown';
