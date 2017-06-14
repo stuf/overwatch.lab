@@ -5,12 +5,12 @@
   "author": "Stefan Rimaila <stefan@rimaila.fi>",
   "license": "MIT",
   "scripts": {
-    "start": "",
+    "start": "echo \"Not yet implemented.\"; exit 1",
+    "start:cli": "NODE_ENV=development nodemon build/cli/index.js -w build/cli/",
     "start:dev": "NODE_ENV=development npm run dev:app",
     "start:dev:mock": "NODE_ENV=development USE_MOCK=1 npm run dev:app",
     "dev": "NODE_ENV=development rimraf build/ && babel src -d build --watch",
     "dev:app": "nodemon build/index.js -w build/ -- -r source-map-support/register",
-    "start": "",
     "lint": "eslint src/"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "request-promise": "^4.2.1",
     "rethinkdb": "^2.3.3",
     "schemation": "^0.2.2",
+    "vorpal": "^1.12.0",
     "x-ray": "^2.3.2"
   },
   "devDependencies": {
