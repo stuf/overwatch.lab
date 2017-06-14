@@ -1,9 +1,11 @@
 import Logdown from 'logdown';
 import pkg from '../package.json';
 
-const logger = new Logdown({ prefix: 'src/index' });
+import { mkLogger } from './common/logger';
 
-logger.info(`${pkg.name} ${pkg.version}`);
+const logger = mkLogger('src:index');
+
+logger.info(`*${pkg.name} ${pkg.version}*`);
 logger.info('Starting up');
 
 require('./main').default();

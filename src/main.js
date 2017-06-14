@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import * as R from 'ramda';
-import Logdown from 'logdown';
+
+import { mkLogger } from './common/logger';
 
 import * as DB from './db';
 import { getProfileFor, getMockProfile } from './scraper';
@@ -13,7 +14,7 @@ import { parsePlayer } from './parser/player';
 //
 
 export default () => {
-  const logger = new Logdown({ prefix: 'src/main' });
+  const logger = mkLogger('src:main');
   const { NODE_ENV, USE_MOCK } = process.env;
 
   logger.info('NODE\_ENV is', `\`${NODE_ENV}\``);

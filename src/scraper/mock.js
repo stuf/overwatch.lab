@@ -3,9 +3,9 @@ import * as U from 'karet.util';
 import { fromNodeCallback as cbIntoK } from 'kefir';
 import fs from 'fs';
 import path from 'path';
-import Logdown from 'logdown';
+import { mkLogger } from '../common/logger';
 
-const logger = new Logdown({ prefix: 'src/scraper/mock' });
+const logger = mkLogger('src:scraper:mock');
 
 const mockFile = path.resolve(__dirname, '..', '..', 'data', 'piparkaq-2318');
 

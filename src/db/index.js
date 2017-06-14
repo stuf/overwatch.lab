@@ -4,13 +4,13 @@ import K, * as U from 'karet.util';
 import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import r from 'rethinkdb';
-import Logdown from 'logdown';
 
+import { mkLogger } from '../common/logger';
 import { DB_NAME, Table, connectionOptions } from './config';
 
 //
 
-const logger = new Logdown({ prefix: 'src/db/index' });
+const logger = mkLogger('src:db:index');
 
 //
 

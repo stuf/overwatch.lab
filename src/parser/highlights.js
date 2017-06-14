@@ -3,9 +3,7 @@
  * Provides a parser for a career page that returns a "career highlights" object.
  */
 import * as U from 'karet.util';
-import * as L from 'partial.lenses';
 import * as R from 'ramda';
-import Xray from 'x-ray';
 
 import { getKeyByValue } from '../common/util';
 import { x, xF2, xF3, fromCb, flipObj } from './helper';
