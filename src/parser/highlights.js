@@ -2,10 +2,13 @@
 /**
  * Provides a parser for a career page that returns a "career highlights" object.
  */
+import * as U from 'karet.util';
 import * as L from 'partial.lenses';
 import * as R from 'ramda';
+import Xray from 'x-ray';
 
 import { getKeyByValue } from '../common/util';
+import { x, xF2, xF3, fromCb } from './helper';
 
 //
 
@@ -34,6 +37,11 @@ const highlightKeys = {
   avgSoloKills: 'Solo Kills - Average',
 };
 
+const highlightKeysInv =
+  R.compose(R.fromPairs,
+            R.map(R.reverse),
+            R.toPairs)(highlightKeys);
+
 const HighlightStat = {
   empty: R.always({}),
   concat: (x, y) => R.merge(pairToObj(x), y),
@@ -61,13 +69,21 @@ const highlightStatL =
 // Featured stats
 
 export const parseHighlights = root =>
-  R.compose(L.concat(HighlightStat,
-                       [L.elems,
-                        highlightStatL]),
-            R.splitEvery(2))(root.find(SELECTOR)
-                                 .find('.card-content')
-                                 .children()
-                                 .toArray());
+  U.seq((root),
+        U.flatMapLatest(r => xF3(r, '.highlights-section .card-content', [{
+          key: '.card-copy',
+          value: '.card-heading',
+        }])),
+        U.flatMapLatest(fromCb),
+        U.flatMapLatest(
+          R.compose(
+            R.fromPairs,
+            R.map(([k, v]) => [R.prop(k, highlightKeysInv), v]),
+            R.map(
+              R.compose(
+                R.map(R.last),
+                R.toPairs)))),
+        U.lift(U.show));
 
 //
 

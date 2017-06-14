@@ -18,18 +18,17 @@ const userId = userProfile.map(R.prop('id')); // .log('userId');
 // const userCareerProfile = userProfile.flatMap(({ name, tag }) => getProfileFor(name, tag));
 const userCareerProfile = getMockProfile();
 
-const highlights = userCareerProfile.map(parseHighlights);
-const player = userCareerProfile.map(parsePlayer);
+const highlights = userCareerProfile.flatMap(parseHighlights);
+// const player = userCareerProfile.map(parsePlayer);
 const careerStats = userCareerProfile.flatMap(parseCareerStats(Heroes.ALL_HEROES));
 
 //
 // Averages
 
-const pushAverages = K(userId, highlights).flatMap(R.apply(DB.pushAveragesForUser));
+// const pushAverages = K(userId, highlights).flatMap(R.apply(DB.pushAveragesForUser));
 
 //
 
-// highlights.log('highlights');
+highlights.log('highlights');
 // player.log('player');
 // careerStats.log('careerStats');
-careerStats.observe(R.identity);
