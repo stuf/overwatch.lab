@@ -19,7 +19,7 @@ const userId = userProfile.map(R.prop('id')); // .log('userId');
 const userCareerProfile = getMockProfile();
 
 const highlights = userCareerProfile.flatMap(parseHighlights);
-// const player = userCareerProfile.map(parsePlayer);
+const player = userCareerProfile.flatMap(parsePlayer);
 const careerStats = userCareerProfile.flatMap(parseCareerStats(Heroes.ALL_HEROES));
 
 //
@@ -30,5 +30,5 @@ const careerStats = userCareerProfile.flatMap(parseCareerStats(Heroes.ALL_HEROES
 //
 
 highlights.log('highlights');
-// player.log('player');
+player.log('player');
 careerStats.log('careerStats');
