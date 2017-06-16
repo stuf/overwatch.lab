@@ -9,14 +9,6 @@ export const SELECTOR = '#overview-section';
 
 //
 
-const intoNumber = n => parseInt(n, 10);
-
-const getPlayer = root => root.find('.masthead-player');
-const getPlayerName = node => node.find('.header-masthead').text();
-const getPlayerLevel = node => node.find('.player-level > *').text();
-
-//
-
 export const parsePlayer = root =>
   U.seq(root,
         U.flatMapLatest(r => xF3(r, '.masthead-player', {

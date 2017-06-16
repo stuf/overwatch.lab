@@ -52,11 +52,17 @@ export default () => {
                         D.getTime)(new Date());
 
   // Just output them for now
-  U.seq(K({ player, highlights, careerStats }, R.identity),
-    U.flatMapLatest(R.compose(R.toPairs)),
-    U.map(([k, v]) =>
-      fs.writeFileSync(`${dataTargetDir}/${k}_${now}.json`,
-                       JSON.stringify(v, null, 2))))
-    .log('write')
-    .observe(R.identity);
+
+  if (USE_MOCK !== '1') {
+    U.seq(K({ player, highlights, careerStats }, R.identity),
+      U.flatMapLatest(R.compose(R.toPairs)),
+      U.map(([k, v]) =>
+        fs.writeFileSync(path.join(dataTargetDir, `${k}_${now}.json`),
+                        JSON.stringify(v, null, 2))))
+      .log('write')
+      .observe(R.identity);
+  }
+  else if (USE_MOCK === '1') {
+    highlights.log('highlights');
+  }
 };

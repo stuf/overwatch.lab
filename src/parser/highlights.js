@@ -5,45 +5,17 @@
 import * as U from 'karet.util';
 import * as R from 'ramda';
 
-import { getKeyByValue } from '../common/util';
-import { x, xF2, xF3, fromCb, flipObj } from './helper';
+import { xF2, xF3, fromNodeCallback as fromCb, camelCase } from '../common/util';
 
 //
 
-export const SELECTOR = '.highlights-section';
+const camelCasePair = R.compose(R.adjust(camelCase, 0), R.reverse);
+const camelCasePairs = R.compose(R.fromPairs, R.map(camelCasePair));
+const parsePairs = r => fromCb(xF3(r, '.highlight-stats', xF2('.card-content', [['.card-heading, .card-copy']])));
 
-//
-
-const highlightKeys = {
-  avgElims: 'Eliminations - Average',
-  avgDamageDone: 'Damage Done - Average',
-  avgDeaths: 'Deaths - Average',
-  avgFinalBlows: 'Final Blows - Average',
-  avgHealingDone: 'Healing Done - Average',
-  avgObjectiveKills: 'Objective Kills - Average',
-  avgObjectiveTime: 'Objective Time - Average',
-  avgSoloKills: 'Solo Kills - Average',
-};
-
-const highlightKeysInv = flipObj(highlightKeys);
-
-//
-
-export const parseHighlights = root =>
-  U.seq((root),
-        U.flatMapLatest(r =>
-          fromCb(xF3(r, '.highlights-section .card-content', [{
-            key: '.card-copy',
-            value: '.card-heading',
-          }]))),
-        U.flatMapLatest(
-          R.compose(
-            R.fromPairs,
-            R.map(([k, v]) => [R.prop(k, highlightKeysInv), v]),
-            R.map(
-              R.compose(
-                R.map(R.last),
-                R.toPairs)))));
+export const parseHighlights =
+  U.pipe(U.flatMapLatest(parsePairs),
+         U.flatMapLatest(camelCasePairs));
 
 //
 

@@ -28,7 +28,6 @@ const connection = K(fromP(connect), R.identity);
 //
 
 export const run = query => connection.flatMapLatest(conn => fromP(query.run(conn)));
-
 export const toArray = cursor => fromP(cursor.toArray());
 
 // Profile
