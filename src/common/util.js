@@ -23,10 +23,10 @@ export const unLocalizeNumber = R.compose(R.replace(/[^\d.-]+/), asNumber);
 
 const replaceSeparator = R.replace(' - ', '');
 const emptyJoin = R.join('');
-const fstTo = fn => R.adjust(fn, 0);
+const fstTo = R.adjust(R.__, 0);
 
 export const capitalize = R.compose(emptyJoin, fstTo(R.toUpper), R.splitAt(1), R.toLower);
-export const camelCase = R.compose(emptyJoin, fstTo(R.lower), R.map(capitalize), R.split(' '), replaceSeparator);
+export const camelCase = R.compose(emptyJoin, fstTo(R.toLower), R.map(capitalize), R.split(' '), replaceSeparator);
 
 // X-ray
 

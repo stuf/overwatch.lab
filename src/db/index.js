@@ -72,7 +72,3 @@ export const pushAveragesForUser = (profileId, avgs) =>
                            createdAt: r.now(),
                            profile: profileId,
                          })));
-
-//
-
-//
