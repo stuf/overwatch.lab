@@ -44,3 +44,7 @@ export const parseCareerStats = R.curry((category, root) =>
         U.flatMapLatest(R.compose(R.fromPairs,
                                   R.map(R.adjust(H.camelCase, 0)),
                                   R.splitEvery(2)))));
+
+export default {
+  parseCareerStats,
+};
