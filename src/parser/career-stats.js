@@ -3,7 +3,6 @@ import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import { fromNodeCallback as fromCb } from 'kefir';
 
-import { parseCardTable } from './parsers/common';
 import * as H from '../common/util';
 
 //
@@ -37,11 +36,9 @@ const mapCategory = R.curry((category, r) =>
 export const parseCareerStats = R.curry((category, root) =>
   U.seq(root,
         U.flatMapLatest(mapCategory(category)),
-        U.map(mapTable),
-        U.flatMapLatest(K),
+        U.flatMapLatest(R.compose(K, R.map(mapTable))),
         U.flatten,
-        U.map(L.modify(['content', L.define({})],
-                       R.splitEvery(2))),
+        U.flatMapLatest(L.modify([L.elems, 'content'], R.splitEvery(2))),
         U.map(r => R.merge(r, { content: R.compose(R.fromPairs, parsePairs)(r) })),
         U.flatMapLatest(L.collect([L.elems, L.values])),
         U.flatMapLatest(R.compose(R.fromPairs,
