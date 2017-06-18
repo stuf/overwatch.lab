@@ -10,9 +10,13 @@ import {
 import * as Dfns from 'date-fns';
 import Xray from 'x-ray';
 
+// Prepare some functions
+
 const Dfns_dateFormat = R.flip(Dfns.format);
 
 // Basic helper functions
+
+export const sndU = (_, s) => s;
 
 export const trim = value => R.is(String, value) ? value.trim() : value;
 export const asNumber = value => parseInt(value, 10);
@@ -51,6 +55,7 @@ export const dateFormat = R.curry(Dfns_dateFormat);
 
 export const seq = (a, ...fns) => R.pipe(...fns)(a);
 export const seqR = (a, ...fns) => R.compose(...fns)(a);
+export const sndU = (_, t) => t;
 
 // Objects
 

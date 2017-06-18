@@ -63,6 +63,7 @@ export default () => {
       .observe(R.identity);
   }
   else if (USE_MOCK === '1') {
-    highlights.log('highlights');
+    // highlights.log('highlights');
+    careerStats.log('careerStats');
   }
 };
