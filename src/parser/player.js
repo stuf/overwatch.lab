@@ -1,7 +1,7 @@
 import * as U from 'karet.util';
 import * as R from 'ramda';
 
-import { xF3, fromCb } from './helper';
+import { xF3, fromCb } from '../common/util';
 
 //
 

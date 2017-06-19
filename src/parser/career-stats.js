@@ -1,9 +1,13 @@
+/* eslint-disable comma-dangle */
 import K, * as U from 'karet.util';
 import * as L from 'partial.lenses';
 import * as R from 'ramda';
 import { fromNodeCallback as fromCb } from 'kefir';
 
 import * as H from '../common/util';
+import { Heroes } from './constants';
+
+const x = H.x;
 
 //
 
@@ -23,28 +27,24 @@ const condFormat =
     [timeFormatCond, formatNumber],
   ]);
 
-const parsePair = ([k, v]) => [H.camelCase(k), condFormat(v)];
-const parsePairs = R.compose(R.map(parsePair), R.prop('content'));
+//
 
-const mapTable = r => fromCb(H.xF3(r, 'table', { title: '.stat-title', content: ['td'] }));
+const fromEls = prop => [L.elems, prop];
+const intoObject = R.compose(R.transpose, R.splitEvery(2));
 
-const mapCategory = R.curry((category, r) =>
-  fromCb(H.xF3(r,
-               '.career-stats-section',
-               H.xF2(`[data-category-id="${category}"]`, ['.card-stat-block@html']))));
+const childData = [fromEls('children'), fromEls('data')];
 
-export const parseCareerStats = R.curry((category, root) =>
-  U.seq(root,
-        U.flatMapLatest(mapCategory(category)),
-        U.flatMapLatest(R.compose(K, R.map(mapTable))),
-        U.flatten,
-        U.flatMapLatest(L.modify([L.elems, 'content'], R.splitEvery(2))),
-        U.map(r => R.merge(r, { content: R.compose(R.fromPairs, parsePairs)(r) })),
-        U.flatMapLatest(L.collect([L.elems, L.values])),
-        U.flatMapLatest(R.compose(R.fromPairs,
-                                  R.map(R.adjust(H.camelCase, 0)),
-                                  R.splitEvery(2)))));
+//
 
-export default {
-  parseCareerStats,
-};
+export const parse =
+  r => H.fromCb(x(r, '.js-stats', [{
+    id: '@data-category-id',
+    children: x('.data-table', [{
+      title: '.stat-title',
+      data: ['td'],
+    }]),
+  }]));
+
+export const parseCategories =
+  U.pipe(U.flatMapLatest(parse),
+         U.flatMapLatest(L.modify(childData, intoObject)));

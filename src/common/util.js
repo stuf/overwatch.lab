@@ -21,6 +21,8 @@ export const sndU = (_, s) => s;
 export const trim = value => R.is(String, value) ? value.trim() : value;
 export const asNumber = value => parseInt(value, 10);
 export const asFloat = value => parseFloat(value, 10);
+export const blizGuidFromImg = R.compose(R.last, R.match(/\/(0x\w+)\.png/));
+export const blizGuidFromAttr = R.compose(R.last, R.match(/overwatch\.guid\.(0x\w+)/));
 export const unLocalizeNumber = R.compose(R.replace(/[^\d.-]+/), asNumber);
 
 // Strings
@@ -34,7 +36,7 @@ export const camelCase = R.compose(emptyJoin, fstTo(R.toLower), R.map(capitalize
 
 // X-ray
 
-export const x = Xray({ filters: { trim, asNumber, asFloat, unLocalizeNumber } });
+export const x = Xray({ filters: { trim, asNumber, asFloat, unLocalizeNumber, blizGuidFromAttr, blizGuidFromImg } });
 export const xF1 = x;
 export const xF2 = R.curry((data, sel) => x(data, sel));
 export const xF3 = R.curry((data, ctx, sel) => x(data, ctx, sel));
@@ -46,6 +48,7 @@ export const xU3 = (a, b, c) => U.lift(xF3)(a, b, c); // lifted version might no
 export const toConstant = a => a instanceof Observable ? a : constant(a);
 export const fromPromise = R.curry(Kefir_fromPromise);
 export const fromNodeCallback = R.curry(Kefir_fromNodeCallback);
+export const fromCb = fromNodeCallback;
 
 // date-fns
 
@@ -55,7 +58,6 @@ export const dateFormat = R.curry(Dfns_dateFormat);
 
 export const seq = (a, ...fns) => R.pipe(...fns)(a);
 export const seqR = (a, ...fns) => R.compose(...fns)(a);
-export const sndU = (_, t) => t;
 
 // Objects
 
